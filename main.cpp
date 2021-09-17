@@ -8,7 +8,7 @@ const auto default_source_files_extentions = std::vector<std::string> {
 
 auto trim_begin(const std::string& value, std::size_t length) {
     std::string result = value;
-    result.erase(0, length + 1);
+    result.erase(0, length);
     return result;
 }
 
@@ -49,11 +49,11 @@ int main(int argc, char *argv[])
             return std::filesystem::current_path();
         }
         return std::filesystem::path(argv[1]);
-    }().string();
+    }();
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(target_directory_path)) {
         const auto entry_absolute_path = entry.path().string();
-        const auto entry_relative_path = trim_begin(entry_absolute_path, target_directory_path.length());
+        const auto entry_relative_path = trim_begin(entry_absolute_path, target_directory_path.string().length() - target_directory_path.filename().string().length());
         const auto entry_fixed_relative_path = fix_slash(entry_relative_path);
         if (is_source_file(entry_fixed_relative_path)) {
             std::cout << "${CMAKE_CURRENT_SOURCE_DIR}/" << entry_fixed_relative_path << '\n';
